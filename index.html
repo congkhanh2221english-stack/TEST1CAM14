@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#071526">
+  <meta name="description" content="Ứng dụng luyện thi IELTS Listening 40 câu, chấm chữa và phân tích lỗi.">
+  <title>IELTS Listening Lab — Professional Mock Test</title>
+  <link rel="manifest" href="app.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="welcome" class="welcome-shell">
+    <div class="aurora a1"></div><div class="aurora a2"></div>
+    <section class="welcome-card">
+      <div class="brand brand-large"><span class="brand-mark">L</span><div><b>IELTS Listening Lab</b><small>Mock • Analyse • Improve</small></div></div>
+      <div class="hero-grid">
+        <div>
+          <span class="eyebrow">CAMBRIDGE 14 • TEST 1</span>
+          <h1>Luyện Listening như thi thật.<br><em>Chữa lỗi như có giáo viên.</em></h1>
+          <p class="hero-copy">40 câu • 4 section • audio gốc • tự lưu tiến độ • chấm band • giải thích bẫy nghe và kỹ năng cần ôn.</p>
+          <div class="feature-row">
+            <span>✓ Thi thử 40 phút</span><span>✓ Luyện từng Section</span><span>✓ Kho lỗi sai</span>
+          </div>
+        </div>
+        <div class="sound-orbit" aria-hidden="true">
+          <div class="orbit-ring r1"></div><div class="orbit-ring r2"></div>
+          <div class="headphone">◉</div>
+          <div class="eq"><i style="--h:38%"></i><i style="--h:75%"></i><i style="--h:52%"></i><i style="--h:92%"></i><i style="--h:62%"></i><i style="--h:42%"></i><i style="--h:82%"></i><i style="--h:56%"></i><i style="--h:96%"></i><i style="--h:67%"></i><i style="--h:44%"></i><i style="--h:74%"></i><i style="--h:58%"></i></div>
+        </div>
+      </div>
+      <div class="mode-grid">
+        <button class="mode-card selected" data-mode="exam"><span class="mode-icon">⏱</span><b>Chế độ thi thật</b><small>40 phút, audio 1 lần, không tua</small></button>
+        <button class="mode-card" data-mode="practice"><span class="mode-icon">🎧</span><b>Chế độ luyện tập</b><small>Tua, đổi tốc độ, xem chữa chi tiết</small></button>
+      </div>
+      <div class="start-row">
+        <label class="candidate"><span>Tên thí sinh</span><input id="candidateName" placeholder="Nhập tên (không bắt buộc)" autocomplete="name"></label>
+        <button id="startBtn" class="primary big">Bắt đầu làm bài <span>→</span></button>
+      </div>
+      <p class="legal-note">Tài liệu luyện tập cá nhân. IELTS là nhãn hiệu của các tổ chức sở hữu tương ứng; ứng dụng này không phải sản phẩm chính thức.</p>
+    </section>
+  </div>
+
+  <div id="app" class="app hidden">
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark">L</span><div><b>IELTS Listening Lab</b><small id="modeLabel">Mock test</small></div></div>
+      <div class="top-progress"><div class="progress-meta"><span id="answeredLabel">0/40 đã trả lời</span><span id="sectionLabel">Section 1</span></div><div class="progress-track"><i id="progressFill"></i></div></div>
+      <div class="top-actions"><button id="themeBtn" class="icon-btn" title="Đổi giao diện">☾</button><div id="timer" class="timer"><small>THỜI GIAN</small><b>40:00</b></div><button id="submitTop" class="primary">Nộp bài</button></div>
+    </header>
+
+    <main class="workspace">
+      <aside class="sidebar">
+        <div class="candidate-card"><span class="avatar" id="avatar">HS</span><div><small>THÍ SINH</small><b id="candidateDisplay">Học viên</b></div><span id="saveState" class="save-state">● Đã lưu</span></div>
+        <nav id="sectionNav" class="section-nav"></nav>
+        <div class="palette-head"><b>Question palette</b><button id="clearBtn" class="text-btn">Làm lại</button></div>
+        <div id="palette" class="palette"></div>
+        <div class="legend"><span><i class="lg answered"></i>Đã làm</span><span><i class="lg flagged"></i>Đánh dấu</span><span><i class="lg current"></i>Đang xem</span></div>
+        <button id="reviewWrongBtn" class="ghost full">Kho lỗi sai <span id="wrongCount">0</span></button>
+      </aside>
+
+      <section class="content-column">
+        <div class="audio-panel">
+          <div class="audio-info"><span class="audio-badge" id="audioSection">S1</span><div><small>NOW PLAYING</small><b id="audioTitle">Crime report form</b></div></div>
+          <audio id="audio" preload="metadata"></audio>
+          <div class="player-controls">
+            <button id="back10" class="circle-btn" title="Lùi 10 giây">↶<small>10</small></button>
+            <button id="playBtn" class="play-btn" aria-label="Phát hoặc tạm dừng">▶</button>
+            <button id="forward10" class="circle-btn" title="Tiến 10 giây">↷<small>10</small></button>
+          </div>
+          <div class="timeline"><div class="time-row"><span id="currentTime">00:00</span><span id="audioRule">Audio chỉ phát 1 lần</span><span id="duration">00:00</span></div><input id="seek" type="range" min="0" max="1000" value="0" aria-label="Tiến trình audio"></div>
+          <div class="speed-wrap"><small>TỐC ĐỘ</small><select id="speed"><option value="0.75">0.75×</option><option value="1" selected>1.00×</option><option value="1.25">1.25×</option><option value="1.5">1.50×</option></select></div>
+        </div>
+
+        <article id="testPaper" class="paper"></article>
+        <div class="paper-footer"><button id="prevSection" class="ghost">← Section trước</button><button id="flagCurrent" class="ghost">☆ Đánh dấu câu đang xem</button><button id="nextSection" class="primary">Section tiếp →</button></div>
+      </section>
+    </main>
+  </div>
+
+  <div id="resultModal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-panel result-panel">
+      <button id="closeResult" class="modal-close">×</button>
+      <div class="result-hero"><div class="band-ring"><span>BAND</span><b id="bandScore">0.0</b></div><div><span class="eyebrow">KẾT QUẢ LISTENING</span><h2 id="resultTitle">Bài làm đã được chấm</h2><p id="resultSummary"></p><div class="result-actions"><button id="reviewBtn" class="primary">Xem chữa chi tiết</button><button id="retryBtn" class="ghost">Làm lại bài</button></div></div></div>
+      <div id="sectionStats" class="stat-grid"></div>
+      <div class="diagnosis"><div><small>CHẨN ĐOÁN NHANH</small><h3 id="diagnosisTitle"></h3><p id="diagnosisText"></p></div><div id="skillBars" class="skill-bars"></div></div>
+    </div>
+  </div>
+
+  <div id="reviewModal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-panel review-panel">
+      <div class="review-head"><div><span class="eyebrow">ANSWER REVIEW</span><h2>Chấm chữa chi tiết</h2></div><div class="review-tools"><label><input id="wrongOnly" type="checkbox"> Chỉ xem câu sai</label><button id="closeReview" class="modal-close static">×</button></div></div>
+      <div id="reviewList" class="review-list"></div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+  <script src="questions-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
